@@ -45,6 +45,7 @@ import { ProviderSettingsHost } from "@/components/provider-settings-host";
 import { WorkspaceSetupDialog } from "@/components/workspace-setup-dialog";
 import { WorkspaceShortcutTargetsSubscriber } from "@/components/workspace-shortcut-targets-subscriber";
 import { FloatingPanelPortalHost } from "@/components/ui/floating-panel-portal";
+import { HEADER_CONTROL_HEIGHT } from "@/components/ui/control-geometry";
 import { HostChooserModal, useHostChooser } from "@/hosts/host-chooser";
 import { HostConfirmationSheet } from "@/hosts/host-confirmation-sheet";
 import {
@@ -56,6 +57,7 @@ import {
   canDesktopAppSidebarShare,
   resolveDesktopAppChromeLayout,
   resolveDesktopAppContentMinimum,
+  resolveWindowSidebarToggleTop,
   resolveDesktopSidebarVisibility,
 } from "@/components/desktop-sidebar-layout";
 import { isNative, isWeb } from "@/constants/platform";
@@ -540,7 +542,13 @@ function AppContainer({ children, chromeEnabled: chromeEnabledOverride }: AppCon
       layoutStyles.windowSidebarToggle,
       windowControlsCenterY === null
         ? null
-        : inlineUnistylesStyle({ top: windowControlsCenterY - HEADER_INNER_HEIGHT / 2 }),
+        : inlineUnistylesStyle({
+            top: resolveWindowSidebarToggleTop({
+              controlsCenterY: windowControlsCenterY,
+              containerHeight: HEADER_INNER_HEIGHT,
+              buttonHeight: HEADER_CONTROL_HEIGHT,
+            }),
+          }),
     ],
     [windowControlsCenterY],
   );
@@ -1022,7 +1030,5 @@ const layoutStyles = StyleSheet.create((theme) => ({
     height: HEADER_INNER_HEIGHT,
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: theme.borderWidth[1],
-    borderBottomColor: "transparent",
   },
 }));
