@@ -117,9 +117,11 @@ import { flushDraftPersistStorage } from "@/stores/draft-store";
 import { getNextThemePreference, ICON_STROKE_WIDTH } from "@/styles/theme";
 import { useSessionStore } from "@/stores/session-store";
 import { installWebScrollbarStyles } from "@/styles/install-web-scrollbar-styles";
+import { inlineUnistylesStyle } from "@/styles/unistyles-inline-style";
 import type { HostProfile } from "@/types/host-connection";
 import {
   useHasWindowChromeObstruction,
+  useWindowChromeTopLeftCenterY,
   WindowChromeProvider,
   WindowChromeRegion,
   WindowChromeSafeArea,
@@ -532,6 +534,16 @@ function AppContainer({ children, chromeEnabled: chromeEnabledOverride }: AppCon
     }),
   });
   const hasTopLeftWindowControls = useHasWindowChromeObstruction("top-left");
+  const windowControlsCenterY = useWindowChromeTopLeftCenterY();
+  const windowSidebarToggleStyle = useMemo(
+    () => [
+      layoutStyles.windowSidebarToggle,
+      windowControlsCenterY === null
+        ? null
+        : inlineUnistylesStyle({ top: windowControlsCenterY - HEADER_INNER_HEIGHT / 2 }),
+    ],
+    [windowControlsCenterY],
+  );
   const appChromeLayout = resolveDesktopAppChromeLayout({
     desktopSidebarRendered: desktopSidebarVisible,
     hasTopLeftWindowControls,
@@ -584,7 +596,7 @@ function AppContainer({ children, chromeEnabled: chromeEnabledOverride }: AppCon
               placement="inline"
               horizontalPadding={WINDOW_SIDEBAR_TOGGLE_HORIZONTAL_PADDING}
               pointerEvents="box-none"
-              style={layoutStyles.windowSidebarToggle}
+              style={windowSidebarToggleStyle}
             >
               <WindowSidebarMenuToggle />
             </WindowChromeSafeArea>
